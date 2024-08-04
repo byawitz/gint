@@ -1,8 +1,7 @@
-package testing
+package indexer
 
 import (
 	"fmt"
-	"github.com/byawitz/gint/internal/indexer"
 	Copy "github.com/otiai10/copy"
 	"math/rand/v2"
 	"os"
@@ -15,7 +14,7 @@ import (
 func TestIndexerAllFiles(t *testing.T) {
 	tmpEnvFolderName := before(t)
 
-	files := indexer.GetFiles([]string{tmpEnvFolderName}, false)
+	files := GetFiles([]string{tmpEnvFolderName}, false)
 
 	allFiles := []string{
 		filepath.Join(tmpEnvFolderName, "app/index.php"),
@@ -47,14 +46,14 @@ func TestIndexerNotGitRepo(t *testing.T) {
 		}
 	}(tmpEnvFolderName)
 
-	indexer.GetFiles([]string{tmpEnvFolderName}, true)
+	GetFiles([]string{tmpEnvFolderName}, true)
 }
 
 func TestIndexerGitDirty(t *testing.T) {
 	tmpEnvFolderName := before(t)
 	initAndCommit(t, tmpEnvFolderName)
 
-	files := indexer.GetFiles([]string{tmpEnvFolderName}, true)
+	files := GetFiles([]string{tmpEnvFolderName}, true)
 
 	allFiles := []string{
 		filepath.Join(tmpEnvFolderName, "conf/config.php"),
@@ -85,7 +84,7 @@ func before(t *testing.T) string {
 		t.Fatal("unable to get current path")
 	}
 
-	err = Copy.Copy(filepath.Join(currentPath, "demo-project"), tmpEnvFolderName)
+	err = Copy.Copy(filepath.Join(currentPath, "../../tests_assets/demo-project"), tmpEnvFolderName)
 
 	if err != nil {
 		t.Fatalf("unable to copy tmp environment %v", err)
