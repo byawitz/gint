@@ -3,7 +3,6 @@ package logger
 import (
 	"fmt"
 	"github.com/byawitz/gint/internal/theme"
-	"os"
 )
 
 func Notice(messages ...string) {
@@ -19,6 +18,5 @@ func Bad(messages ...string) {
 }
 
 func Fatal(messages ...string) {
-	Bad(messages...)
-	os.Exit(1)
+	panic(theme.Red.Render(messages...))
 }

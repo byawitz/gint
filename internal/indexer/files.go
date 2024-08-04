@@ -111,7 +111,7 @@ func getGitChangedPHPFiles(locations []string) []string {
 			if file == "" {
 				continue
 			}
-			file = location + file[3:]
+			file = filepath.Join(location, file[3:])
 			files = append(files, file)
 		}
 	}
