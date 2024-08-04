@@ -60,14 +60,12 @@ func getFiles(locations []string) []string {
 func getPHPFilesForLocation(location string) []string {
 	var files []string
 
-	unixLocation := strings.ReplaceAll(location, "\\", "/")
-
 	err := filepath.WalkDir(location, func(filePath string, entry fs.DirEntry, e error) error {
 		if e != nil {
 			return e
 		}
 
-		if strings.ReplaceAll(filePath, "\\", "/") == unixLocation+"/vendor" {
+		if filepath.Clean(filePath) == filepath.Join(location, "vendor") {
 			return filepath.SkipDir
 		}
 
