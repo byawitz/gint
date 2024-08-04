@@ -16,6 +16,14 @@ const (
 	defaultPreset = "psr12"
 )
 
+func NewConfig(content string) (*Config, error) {
+	if content == "" {
+		return &Config{Preset: defaultPreset}, nil
+	}
+
+	return Parse(content)
+}
+
 func Parse(configContent string) (*Config, error) {
 	config := &Config{}
 

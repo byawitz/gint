@@ -3,7 +3,9 @@ package cmd
 import (
 	"fmt"
 	"github.com/byawitz/gint/internal/commands"
+	"github.com/byawitz/gint/internal/configurator"
 	"github.com/byawitz/gint/internal/indexer"
+	"github.com/byawitz/gint/internal/logger"
 	"github.com/byawitz/gint/internal/theme"
 	"github.com/spf13/cobra"
 	"log"
@@ -38,17 +40,26 @@ var gint = &cobra.Command{
 		}
 
 		files := indexer.GetFiles(args, flags.dirty)
+		config, err := configurator.NewConfig(configurator.GetFile(flags.config))
+
+		if err != nil {
+			adding := ""
+			if flags.config != "" {
+				adding = " from provided file"
+			}
+			logger.Fatal(fmt.Sprintf("errors settings gint configuration%s", adding))
+		}
 
 		if flags.test {
-			commands.Test(flags.ci, files, flags.config)
+			commands.Test(flags.ci, files, config)
 			return
 		}
 		if flags.bail {
-			commands.Bail(flags.ci, files, flags.config)
+			commands.Bail(flags.ci, files, config)
 			return
 		}
 
-		commands.Format(flags.ci, files, flags.config)
+		commands.Format(flags.ci, files, config)
 	},
 }
 
