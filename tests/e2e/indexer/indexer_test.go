@@ -102,7 +102,7 @@ func after(t *testing.T, folderName string) {
 
 func initAndCommit(t *testing.T, folder string) {
 	runCommand(t, folder, "git", "unable to initialize git repository", []string{"init"})
-	runCommand(t, folder, "git", "unable to add file to git", []string{"add", "app/index.php"})
+	runCommand(t, folder, "git", "unable to add file to git", []string{"add", "./app/index.php"})
 	runCommand(t, folder, "git", "unable to commit file to git", []string{"commit", "-m", "\"Initial commit\""})
 }
 
@@ -112,6 +112,6 @@ func runCommand(t *testing.T, folder, command, errorString string, args []string
 
 	err := cmd.Run()
 	if err != nil {
-		t.Fatal(errorString)
+		t.Fatalf("%v, Error:%v", errorString, err)
 	}
 }
