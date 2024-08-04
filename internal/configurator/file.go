@@ -5,12 +5,17 @@ import (
 	"os"
 )
 
+const (
+	gintConfigFilename = "gint.json"
+	pintConfigFilename = "pint.json"
+)
+
 func GetFile(path string) string {
 	if _, err := os.Stat(path); err != nil {
-		if _, err2 := os.Stat("gint.json"); err2 == nil {
-			path = "gint.json"
-		} else if _, err2 := os.Stat("pint.json"); err2 == nil {
-			path = "pint.json"
+		if _, err2 := os.Stat(gintConfigFilename); err2 == nil {
+			path = gintConfigFilename
+		} else if _, err2 := os.Stat(pintConfigFilename); err2 == nil {
+			path = pintConfigFilename
 		}
 	}
 
