@@ -88,7 +88,7 @@ func before(t *testing.T) string {
 	err = Copy.Copy(filepath.Join(currentPath, "demo-project\\"), tmpEnvFolderName)
 
 	if err != nil {
-		t.Fatal("unable to copy tmp environment")
+		t.Fatalf("unable to copy tmp environment %v", err)
 	}
 	return tmpEnvFolderName
 }
