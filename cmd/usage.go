@@ -37,7 +37,7 @@ Additional help topics:{{range .Commands}}{{if .IsAdditionalHelpTopicCommand}}
 Use "{{.CommandPath}} [command] --help" for more information about a command.{{end}}
 `,
 		theme.Green.Render("Usage"),
-		theme.Green.Render("Examples:"),
-		theme.Green.Render("Flags:"),
+		theme.Green.Render("Examples"),
+		theme.Green.Render("Flags"),
 	)
 }
