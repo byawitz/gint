@@ -4,6 +4,6 @@ import (
 	"fmt"
 )
 
-func Format(ci, dirty bool, config string) {
-	fmt.Printf("Format %v, %s", []bool{ci, dirty}, config)
+func Format(ci bool, files []string, config string) {
+	fmt.Printf("Format %v, %v, %s", ci, "files", config)
 }

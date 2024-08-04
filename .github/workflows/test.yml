@@ -25,3 +25,10 @@ jobs:
       - name: Testing
         run: |
           go test -v -cover ./...
+  
+
+#  e2e:
+#    name: E2E
+#    runs-on: ubuntu-latest
+#    steps:
+#      - run: echo "Compering results of gint against results of pint"

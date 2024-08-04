@@ -4,6 +4,6 @@ import (
 	"fmt"
 )
 
-func Test(ci, dirty bool, config string) {
-	fmt.Printf("Test %v, %s", []bool{ci, dirty}, config)
+func Test(ci bool, files []string, config string) {
+	fmt.Printf("Test %v, %v, %s", ci, "files", config)
 }

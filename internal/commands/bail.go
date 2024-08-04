@@ -4,6 +4,6 @@ import (
 	"fmt"
 )
 
-func Bail(ci, dirty bool, config string) {
-	fmt.Printf("Bail %v, %s", []bool{ci, dirty}, config)
+func Bail(ci bool, files []string, config string) {
+	fmt.Printf("Bail %v, %v, %s", ci, "", config)
 }

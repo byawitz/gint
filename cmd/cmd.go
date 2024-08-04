@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/byawitz/gint/internal/commands"
+	"github.com/byawitz/gint/internal/indexer"
 	"github.com/byawitz/gint/internal/theme"
 	"github.com/spf13/cobra"
 	"log"
@@ -24,64 +25,31 @@ var gint = &cobra.Command{
 	Use:     "gint [path...]",
 	Example: "  gint app bootstrap/index.php --dirty --config pint.json",
 	Short:   "PHP formatter and linter",
-	Long:    fmt.Sprintf(`%s is a blazingly fast CLI tool for linting and formatting PHP files.`, theme.Green.Render("Blue")),
+	Long:    fmt.Sprintf(`%s is a blazingly fast CLI tool for linting and formatting PHP files.`, theme.Green.Render("Gint")),
 	Run: func(cmd *cobra.Command, args []string) {
 		if flags.version {
 			commands.Version()
 			return
 		}
-		if flags.test {
-			commands.Test(flags.ci, flags.dirty, flags.config)
-			return
-		}
-		if flags.bail {
-			commands.Bail(flags.ci, flags.dirty, flags.config)
-			return
-		}
+
 		if flags.preCommit {
 			commands.PreCommit()
 			return
 		}
 
-		commands.Format(flags.ci, flags.dirty, flags.config)
+		files := indexer.GetFiles(args, flags.dirty)
+
+		if flags.test {
+			commands.Test(flags.ci, files, flags.config)
+			return
+		}
+		if flags.bail {
+			commands.Bail(flags.ci, files, flags.config)
+			return
+		}
+
+		commands.Format(flags.ci, files, flags.config)
 	},
-}
-
-func UsageTemplate() string {
-	return fmt.Sprintf(`%s:{{if .Runnable}}
-  {{.UseLine}}{{end}}{{if .HasAvailableSubCommands}}
-  {{.CommandPath}} [command]{{end}}{{if gt (len .Aliases) 0}}
-
-Aliases:
-  {{.NameAndAliases}}{{end}}{{if .HasExample}}
-
-%s:
-{{.Example}}{{end}}{{if .HasAvailableSubCommands}}{{$cmds := .Commands}}{{if eq (len .Groups) 0}}
-
-Available Commands:{{range $cmds}}{{if (or .IsAvailableCommand (eq .Name "help"))}}
-  {{rpad .Name .NamePadding }} {{.Short}}{{end}}{{end}}{{else}}{{range $group := .Groups}}
-
-{{.Title}}{{range $cmds}}{{if (and (eq .GroupID $group.ID) (or .IsAvailableCommand (eq .Name "help")))}}
-  {{rpad .Name .NamePadding }} {{.Short}}{{end}}{{end}}{{end}}{{if not .AllChildCommandsHaveGroup}}
-
-Additional Commands:{{range $cmds}}{{if (and (eq .GroupID "") (or .IsAvailableCommand (eq .Name "help")))}}
-  {{rpad .Name .NamePadding }} {{.Short}}{{end}}{{end}}{{end}}{{end}}{{end}}{{if .HasAvailableLocalFlags}}
-
-%s:
-{{.LocalFlags.FlagUsages | trimTrailingWhitespaces}}{{end}}{{if .HasAvailableInheritedFlags}}
-
-Global Flags:
-{{.InheritedFlags.FlagUsages | trimTrailingWhitespaces}}{{end}}{{if .HasHelpSubCommands}}
-
-Additional help topics:{{range .Commands}}{{if .IsAdditionalHelpTopicCommand}}
-  {{rpad .CommandPath .CommandPathPadding}} {{.Short}}{{end}}{{end}}{{end}}{{if .HasAvailableSubCommands}}
-
-Use "{{.CommandPath}} [command] --help" for more information about a command.{{end}}
-`,
-		theme.Green.Render("Usage"),
-		theme.Green.Render("Examples:"),
-		theme.Green.Render("Flags:"),
-	)
 }
 
 func init() {
