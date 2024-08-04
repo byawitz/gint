@@ -6,5 +6,5 @@ import (
 )
 
 func Version() {
-	fmt.Printf("Gint %v", theme.Blue.Render("GINT_VERSION"))
+	fmt.Printf("gint %v", theme.Blue.Render("GINT_VERSION"))
 }

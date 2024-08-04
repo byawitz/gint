@@ -25,7 +25,7 @@ var gint = &cobra.Command{
 	Use:     "gint [path...]",
 	Example: "  gint app bootstrap/index.php --dirty --config pint.json",
 	Short:   "PHP formatter and linter",
-	Long:    fmt.Sprintf(`%s is a blazingly fast CLI tool for linting and formatting PHP files.`, theme.Green.Render("Gint")),
+	Long:    fmt.Sprintf(`%s is a blazingly fast CLI tool for linting and formatting PHP files.`, theme.Green.Render("gint")),
 	Run: func(cmd *cobra.Command, args []string) {
 		if flags.version {
 			commands.Version()
@@ -57,9 +57,9 @@ func init() {
 	gint.PersistentFlags().BoolVar(&flags.test, "test", false, "Test without fixing")
 	gint.PersistentFlags().BoolVar(&flags.bail, "bail", false, "Test without fixing, exit on first error")
 	gint.PersistentFlags().BoolVarP(&flags.ci, "ci", "", false, "No buffered output")
-	gint.PersistentFlags().BoolVarP(&flags.preCommit, "pre-commit", "p", false, "Append the Blue lint action to the pre-commit file")
+	gint.PersistentFlags().BoolVarP(&flags.preCommit, "pre-commit", "p", false, "Append the gint lint action to the pre-commit file")
 	gint.PersistentFlags().BoolVarP(&flags.dirty, "dirty", "d", false, "Check git uncommited files only")
-	gint.PersistentFlags().BoolVarP(&flags.version, "version", "V", false, "Prints Blue version")
+	gint.PersistentFlags().BoolVarP(&flags.version, "version", "V", false, "Prints gint version")
 
 	gint.SetUsageTemplate(UsageTemplate())
 }
