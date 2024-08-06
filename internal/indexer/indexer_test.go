@@ -8,13 +8,14 @@ import (
 	"os/exec"
 	"path/filepath"
 	"slices"
+	"strings"
 	"testing"
 )
 
 func TestIndexerAllFiles(t *testing.T) {
 	tmpEnvFolderName := before(t)
 
-	files := GetFiles([]string{tmpEnvFolderName}, false)
+	files := GetFiles([]string{tmpEnvFolderName}, false, nil)
 
 	allFiles := []string{
 		filepath.Join(tmpEnvFolderName, "app/index.php"),
@@ -40,20 +41,22 @@ func TestIndexerNotGitRepo(t *testing.T) {
 
 		if err := recover(); err != nil {
 			expect := fmt.Sprintf("error while checking if there are changed PHP files at: %s", folder)
-			if err != expect {
+			err, ok := err.(string)
+
+			if !ok || strings.Contains(expect, err) {
 				t.Fatalf("expected to get %v but got %v files", err, expect)
 			}
 		}
 	}(tmpEnvFolderName)
 
-	GetFiles([]string{tmpEnvFolderName}, true)
+	GetFiles([]string{tmpEnvFolderName}, true, nil)
 }
 
 func TestIndexerGitDirty(t *testing.T) {
 	tmpEnvFolderName := before(t)
 	initAndCommit(t, tmpEnvFolderName)
 
-	files := GetFiles([]string{tmpEnvFolderName}, true)
+	files := GetFiles([]string{tmpEnvFolderName}, true, nil)
 
 	allFiles := []string{
 		filepath.Join(tmpEnvFolderName, "conf/config.php"),

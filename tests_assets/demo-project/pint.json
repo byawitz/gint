@@ -1,0 +1,18 @@
+{
+  "preset": "psr12",
+  "exclude": [
+    "./src/",
+    "./tests/"
+  ],
+  "notName": [
+    "*fig.ph*"
+  ],
+  "notPath": [
+    "app/index.php"
+  ],
+  "rules": {
+    "array_indentation": true,
+    "single_import_per_statement": true,
+    "simplified_null_return": true
+  }
+}

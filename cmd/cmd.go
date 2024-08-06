@@ -39,8 +39,7 @@ var gint = &cobra.Command{
 			return
 		}
 
-		files := indexer.GetFiles(args, flags.dirty)
-		config, err := configurator.NewConfig(configurator.GetFile(flags.config))
+		config, err := configurator.NewConfig(flags.config)
 
 		if err != nil {
 			adding := ""
@@ -49,6 +48,8 @@ var gint = &cobra.Command{
 			}
 			logger.Fatal(fmt.Sprintf("errors settings gint configuration%s", adding))
 		}
+
+		files := indexer.GetFiles(args, flags.dirty, config)
 
 		if flags.test {
 			commands.Test(flags.ci, files, config)

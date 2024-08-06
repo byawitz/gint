@@ -2,6 +2,7 @@ package configurator
 
 import (
 	"encoding/json"
+	"path/filepath"
 )
 
 type Config struct {
@@ -16,7 +17,9 @@ const (
 	defaultPreset = "psr12"
 )
 
-func NewConfig(content string) (*Config, error) {
+func NewConfig(path string) (*Config, error) {
+	content := getFile(path)
+
 	if content == "" {
 		return &Config{Preset: defaultPreset}, nil
 	}
@@ -36,8 +39,21 @@ func Parse(configContent string) (*Config, error) {
 	if config.Preset == "" {
 		config.Preset = defaultPreset
 	}
+	config.NotPath = removeRelativePrefix(config.NotPath)
+	config.Exclude = removeRelativePrefix(config.Exclude)
+	config.NotName = removeRelativePrefix(config.NotName)
 
 	return config, nil
+}
+
+func removeRelativePrefix(path []string) []string {
+	var fixed []string
+
+	for _, s := range path {
+		fixed = append(fixed, filepath.Clean(s))
+	}
+
+	return fixed
 }
 
 func (c *Config) GetRules() []Rule {

@@ -6,5 +6,5 @@ import (
 )
 
 func Format(ci bool, files []string, config *configurator.Config) {
-	fmt.Printf("Format %v, %v, %s", ci, "files", config)
+	fmt.Printf("Format %v, \n%v\n, %s", ci, files, config)
 }

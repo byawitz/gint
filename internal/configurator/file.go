@@ -10,12 +10,16 @@ const (
 	pintConfigFilename = "pint.json"
 )
 
-func GetFile(path string) string {
-	if _, err := os.Stat(path); err != nil {
+func getFile(path string) string {
+	if path == "" {
 		if _, err2 := os.Stat(gintConfigFilename); err2 == nil {
 			path = gintConfigFilename
 		} else if _, err2 := os.Stat(pintConfigFilename); err2 == nil {
 			path = pintConfigFilename
+		}
+
+		if path == "" {
+			return ""
 		}
 	}
 
