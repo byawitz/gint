@@ -12,8 +12,7 @@ func TestParsing(t *testing.T) {
 	}
 
 	tokens := Tokenize(string(file))
-	for _, token := range tokens {
-
-		token.Debug()
+	if len(tokens) == 0 {
+		t.Fatal("no tokens found")
 	}
 }

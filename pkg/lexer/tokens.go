@@ -51,6 +51,8 @@ const (
 	TMulEqual
 	TDivEqual
 	TConcatEqual
+	TConcat
+	TComma
 	TModEqual
 	TAndEqual
 	TOrEqual
@@ -61,6 +63,8 @@ const (
 	TCoalesceEqual
 	TCoalesce
 	TBooleanOr
+	TAt
+	TPipe
 	TBooleanAnd
 	TAmpersandNotFollowedByVarOrVararg
 	TAmpersandFollowedByVarOrVararg
@@ -72,6 +76,8 @@ const (
 	TSpaceship
 	TIsSmallerOrEqual
 	TIsGreaterOrEqual
+	TIsSmaller
+	TIsGreater
 	TSl
 	TSr
 	TInstanceof
@@ -170,6 +176,8 @@ const (
 	TBadCharacter
 	TError
 	TSemiColon
+	TColon
+	TQuestion
 	TOpenBracket
 	TCloseBracket
 	TOPENCurly
@@ -411,6 +419,10 @@ func TokenKindString(token Kind) string {
 		return "T_DIV_EQUAL"
 	case TConcatEqual:
 		return "T_CONCAT_EQUAL"
+	case TConcat:
+		return "T_CONCAT"
+	case TComma:
+		return "T_COMMA"
 	case TModEqual:
 		return "T_MOD_EQUAL"
 	case TAndEqual:
@@ -427,6 +439,10 @@ func TokenKindString(token Kind) string {
 		return "T_COALESCE_EQUAL"
 	case TBooleanOr:
 		return "T_BOOLEAN_OR"
+	case TAt:
+		return "T_AT"
+	case TPipe:
+		return "T_PIPE"
 	case TBooleanAnd:
 		return "T_BOOLEAN_AND"
 	case TIsEqual:
@@ -443,6 +459,10 @@ func TokenKindString(token Kind) string {
 		return "T_IS_SMALLER_OR_EQUAL"
 	case TIsGreaterOrEqual:
 		return "T_IS_GREATER_OR_EQUAL"
+	case TIsSmaller:
+		return "T_IS_SMALLER"
+	case TIsGreater:
+		return "T_IS_GREATER"
 	case TSpaceship:
 		return "T_SPACESHIP"
 	case TSl:
@@ -513,6 +533,10 @@ func TokenKindString(token Kind) string {
 		return "T_BAD_CHARACTER"
 	case TSemiColon:
 		return "T_SEMI_COLON"
+	case TColon:
+		return "T_COLON"
+	case TQuestion:
+		return "T_question"
 	case TOpenBracket:
 		return "T_OPEN_BRACKET"
 	case TCloseBracket:

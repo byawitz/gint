@@ -90,6 +90,12 @@ func createLexer(source string) *lexer {
 		patterns: []regexPattern{
 			{regexp.MustCompile("([\\S\\s]*?)?<\\?"), htmlHandler, true},
 			{regex: regexp.MustCompile("<\\?p?h?p?"), handler: openTagHandler},
+			{regex: regexp.MustCompile("''"), handler: staticHandler(TString, "''")},
+			{regex: regexp.MustCompile("``"), handler: staticHandler(TString, "``")},
+			{regex: regexp.MustCompile(`""`), handler: staticHandler(TString, `""`)},
+			{regex: regexp.MustCompile(`"[^"]*?"`), handler: stringHandler},
+			{regex: regexp.MustCompile("'[^']*?'"), handler: stringHandler},
+			{regex: regexp.MustCompile("`[^`]*?`"), handler: stringHandler},
 			{regex: regexp.MustCompile("<\\?="), handler: staticHandler(TOpenTagWithEcho, "<?=")},
 			{regex: regexp.MustCompile("\\?>"), handler: closeTagHandler},
 			{regex: regexp.MustCompile("\\s+"), handler: skipHandler},
@@ -99,7 +105,9 @@ func createLexer(source string) *lexer {
 			{regex: regexp.MustCompile("[0-9]+\\.[0-9]+"), handler: literalHandler(TDNumber)},
 			{regex: regexp.MustCompile("[0-9]+"), handler: literalHandler(TLNumber)},
 			{regex: regexp.MustCompile("\\$[A-z_]?[A-z_0-9]+"), handler: literalHandler(TVar)},
-			{regex: regexp.MustCompile(`;`), handler: staticHandler(TString, ";")},
+			{regex: regexp.MustCompile(`;`), handler: staticHandler(TSemiColon, ";")},
+			{regex: regexp.MustCompile(`:`), handler: staticHandler(TColon, ":")},
+			{regex: regexp.MustCompile(`\?`), handler: staticHandler(TQuestion, "?")},
 			{regex: regexp.MustCompile(`\[`), handler: staticHandler(TOpenBracket, "[")},
 			{regex: regexp.MustCompile(`]`), handler: staticHandler(TCloseBracket, "]")},
 			{regex: regexp.MustCompile(`\{`), handler: staticHandler(TOPENCurly, "{")},
@@ -115,10 +123,7 @@ func createLexer(source string) *lexer {
 			//{regex: regexp.MustCompile(""),handler: staticHandler(TStartHeredoc, "heredoc start},
 			//{regex: regexp.MustCompile(""),handler: staticHandler(TEndHeredoc, "heredoc end},
 			//{regex: regexp.MustCompile(""),handler: staticHandler(TBadCharacter, "invalid character},
-
 			{regex: regexp.MustCompile("[A-z]+\\\\[A-z]+"), handler: staticHandler(TNameQualified, "namespaced name")},
-			{regex: regexp.MustCompile("\"[^\"]+\""), handler: stringHandler},
-			{regex: regexp.MustCompile("'[^']+'"), handler: stringHandler},
 			{regex: regexp.MustCompile("eval"), handler: staticHandler(TEval, "eval")},
 			{regex: regexp.MustCompile("new"), handler: staticHandler(TNew, "new")},
 			{regex: regexp.MustCompile("exit"), handler: staticHandler(TExit, "exit")},
@@ -133,12 +138,15 @@ func createLexer(source string) *lexer {
 			{regex: regexp.MustCompile("print"), handler: staticHandler(TPrint, "print")},
 			{regex: regexp.MustCompile("from"), handler: staticHandler(TYieldFrom, "yield from")},
 			{regex: regexp.MustCompile("yield"), handler: staticHandler(TYield, "yield")},
+			{regex: regexp.MustCompile("->"), handler: staticHandler(TObjectOperator, "->")},
 			{regex: regexp.MustCompile("=>"), handler: staticHandler(TDoubleArrow, "=>")},
 			{regex: regexp.MustCompile("\\+="), handler: staticHandler(TPlusEqual, "+=")},
 			{regex: regexp.MustCompile("-="), handler: staticHandler(TMinusEqual, "-=")},
 			{regex: regexp.MustCompile("\\*="), handler: staticHandler(TMulEqual, "*=")},
 			{regex: regexp.MustCompile("/="), handler: staticHandler(TDivEqual, "/=")},
-			{regex: regexp.MustCompile(".="), handler: staticHandler(TConcatEqual, ".=")},
+			{regex: regexp.MustCompile("\\.="), handler: staticHandler(TConcatEqual, ".=")},
+			{regex: regexp.MustCompile("\\."), handler: staticHandler(TConcat, ".")},
+			{regex: regexp.MustCompile(","), handler: staticHandler(TComma, ",")},
 			{regex: regexp.MustCompile("%="), handler: staticHandler(TModEqual, "%=")},
 			{regex: regexp.MustCompile("&="), handler: staticHandler(TAndEqual, "&=")},
 			{regex: regexp.MustCompile("\\|="), handler: staticHandler(TOrEqual, "|=")},
@@ -149,6 +157,8 @@ func createLexer(source string) *lexer {
 			{regex: regexp.MustCompile("\\?\\?="), handler: staticHandler(TCoalesceEqual, "??=")},
 			{regex: regexp.MustCompile("\\?\\?"), handler: staticHandler(TCoalesce, "??")},
 			{regex: regexp.MustCompile("\\|\\|"), handler: staticHandler(TBooleanOr, "||")},
+			{regex: regexp.MustCompile("@"), handler: staticHandler(TBooleanOr, "@")},
+			{regex: regexp.MustCompile("\\|"), handler: staticHandler(TPipe, "|")},
 			{regex: regexp.MustCompile("&&"), handler: staticHandler(TBooleanAnd, "&&")},
 			{regex: regexp.MustCompile("amp"), handler: staticHandler(TAmpersandNotFollowedByVarOrVararg, "amp")},
 			{regex: regexp.MustCompile("&"), handler: staticHandler(TAmpersandFollowedByVarOrVararg, "&")},
@@ -160,6 +170,8 @@ func createLexer(source string) *lexer {
 			{regex: regexp.MustCompile("<=>"), handler: staticHandler(TSpaceship, "<=>")},
 			{regex: regexp.MustCompile("<="), handler: staticHandler(TIsSmallerOrEqual, "<=")},
 			{regex: regexp.MustCompile(">="), handler: staticHandler(TIsGreaterOrEqual, ">=")},
+			{regex: regexp.MustCompile("<"), handler: staticHandler(TIsSmaller, "<")},
+			{regex: regexp.MustCompile(">"), handler: staticHandler(TIsGreater, ">")},
 			{regex: regexp.MustCompile("<<"), handler: staticHandler(TSl, "<<")},
 			{regex: regexp.MustCompile(">>"), handler: staticHandler(TSr, ">>")},
 			{regex: regexp.MustCompile(`=`), handler: staticHandler(TAssignment, "=")},
@@ -245,7 +257,6 @@ func createLexer(source string) *lexer {
 			{regex: regexp.MustCompile("#\\["), handler: staticHandler(TAttribute, "#[")},
 			{regex: regexp.MustCompile("\\+\\+"), handler: staticHandler(TInc, "++")},
 			{regex: regexp.MustCompile("--"), handler: staticHandler(TDec, "--")},
-			{regex: regexp.MustCompile("->"), handler: staticHandler(TObjectOperator, "->")},
 			{regex: regexp.MustCompile("\\?->"), handler: staticHandler(TNullSafeObjectOperator, "?->")},
 			{regex: regexp.MustCompile("\\${"), handler: staticHandler(TDollarOpenCurlyBraces, "${")},
 			{regex: regexp.MustCompile("{\\$"), handler: staticHandler(TCurlyOpen, "{$")},
@@ -309,11 +320,9 @@ func commentHandler(lex *lexer, regex *regexp.Regexp) {
 	lex.advance(len(comment))
 }
 func stringHandler(lex *lexer, regex *regexp.Regexp) {
-	match := regex.FindStringIndex(lex.remainder())
-	stringLiteral := lex.remainder()[match[0]:match[1]]
-
-	lex.push(NewToken(TString, stringLiteral))
-	lex.advance(len(stringLiteral))
+	match := regex.FindString(lex.remainder())
+	lex.push(NewToken(TString, match))
+	lex.advance(len(match))
 }
 func literalHandler(kind Kind) regexHandler {
 	return func(lex *lexer, regex *regexp.Regexp) {
