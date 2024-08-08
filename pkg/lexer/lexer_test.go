@@ -1,7 +1,6 @@
 package lexer
 
 import (
-	"fmt"
 	"os"
 	"testing"
 )
@@ -13,5 +12,8 @@ func TestParsing(t *testing.T) {
 	}
 
 	tokens := Tokenize(string(file))
-	fmt.Println(tokens)
+	for _, token := range tokens {
+
+		token.Debug()
+	}
 }

@@ -40,6 +40,12 @@ const (
 	TYield
 	TDoubleArrow
 	TYieldFrom
+	TAssignment
+	TPlus
+	TDash
+	TSlash
+	TStar
+	TPercent
 	TPlusEqual
 	TMinusEqual
 	TMulEqual
@@ -58,6 +64,7 @@ const (
 	TBooleanAnd
 	TAmpersandNotFollowedByVarOrVararg
 	TAmpersandFollowedByVarOrVararg
+	TNotEqual
 	TIsEqual
 	TIsNotEqual
 	TIsIdentical
@@ -162,6 +169,13 @@ const (
 	TEllipsis
 	TBadCharacter
 	TError
+	TSemiColon
+	TOpenBracket
+	TCloseBracket
+	TOPENCurly
+	TCloseCurly
+	TOpenParen
+	TCloseParen
 )
 
 type Token struct {
@@ -375,6 +389,18 @@ func TokenKindString(token Kind) string {
 		return "T_NS_C"
 	case TAttribute:
 		return "T_ATTRIBUTE"
+	case TAssignment:
+		return "T_ASSIGNMENT"
+	case TPlus:
+		return "T_PLUS"
+	case TDash:
+		return "T_DASH"
+	case TSlash:
+		return "T_SLASH"
+	case TStar:
+		return "T_STAR"
+	case TPercent:
+		return "T_PERCENT"
 	case TPlusEqual:
 		return "T_PLUS_EQUAL"
 	case TMinusEqual:
@@ -407,6 +433,8 @@ func TokenKindString(token Kind) string {
 		return "T_IS_EQUAL"
 	case TIsNotEqual:
 		return "T_IS_NOT_EQUAL"
+	case TNotEqual:
+		return "T_NOT_EQUAL"
 	case TIsIdentical:
 		return "T_IS_IDENTICAL"
 	case TIsNotIdentical:
@@ -483,6 +511,20 @@ func TokenKindString(token Kind) string {
 		return "T_AMPERSAND_NOT_FOLLOWED_BY_VAR_OR_VARARG"
 	case TBadCharacter:
 		return "T_BAD_CHARACTER"
+	case TSemiColon:
+		return "T_SEMI_COLON"
+	case TOpenBracket:
+		return "T_OPEN_BRACKET"
+	case TCloseBracket:
+		return "T_CLOSE_BRACKET"
+	case TOPENCurly:
+		return "T_OPEN_CURLY"
+	case TCloseCurly:
+		return "T_CLOSE_CURLY"
+	case TOpenParen:
+		return "T_OPEN_PAREN"
+	case TCloseParen:
+		return "T_CLOSE_PAREN"
 	default:
 		return "T_BAD_CHARACTER"
 	}
